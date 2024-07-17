@@ -2,3 +2,6 @@ __pycache__/
 libraries/__pycache__/
 output/
 .vscode/
+.venv/
+.mypy_cache/
+.ruff_cache/

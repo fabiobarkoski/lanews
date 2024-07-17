@@ -3,19 +3,21 @@ from typing import Optional
 from datetime import datetime
 from dataclasses import dataclass
 
-MONEY_CHECKER = re.compile(r"\$[\d+\.\,]+|[\d+\.\,]+\s(?:dollars|USD)")
+MONEY_REGEX = re.compile(r"\$[\d+\.\,]+|[\d+\.\,]+\s(?:dollars|USD)")
+
 
 @dataclass
 class Picture:
     name: str
     link: str
 
+
 @dataclass
 class News:
     title: str
     date: datetime
     count: int
-    contains_money: bool
+    has_money: bool
     description: Optional[str] = None
     picture: Optional[Picture] = None
 
@@ -25,16 +27,16 @@ class News:
         for text in texts:
             if text is None:
                 text = ""
-            count += sum([1 for _ in re.findall(phrases+r"\b", text, re.I)])
+            count += sum([1 for _ in re.findall(phrases + r"\b", text, re.I)])
         return count
 
     @staticmethod
-    def contains_money(texts: list[str]) -> bool:
+    def money_checker(texts: list[str]) -> bool:
         have_money = False
         for text in texts:
             if text is None:
                 text = ""
-            if MONEY_CHECKER.findall(text):
+            if MONEY_REGEX.findall(text):
                 have_money = True
         return have_money
 
@@ -45,5 +47,5 @@ class News:
             "date": self.date.isoformat(timespec="seconds"),
             "picture": self.picture.name if self.picture else "None",
             "count": str(self.count),
-            "contains_money": str(self.contains_money)
+            "contains_money": str(self.has_money),
         }
